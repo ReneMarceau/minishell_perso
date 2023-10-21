@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+         #
+#    By: rene <rene@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/23 15:45:10 by rmarceau          #+#    #+#              #
-#    Updated: 2023/10/18 15:58:48 by rmarceau         ###   ########.fr        #
+#    Updated: 2023/10/19 00:39:56 by rene             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,7 @@ INC_DIR = includes
 BUILTINS_DIR = $(SRC_DIR)/builtins
 ERROR_DIR = $(SRC_DIR)/error
 EXEC_DIR = $(SRC_DIR)/executor
-INIT_DIR = $(SRC_DIR)/init
-PARSING_DIR = $(INIT_DIR)/parsing
+PARSING_DIR = $(SRC_DIR)/parsing
 UTILS_DIR = $(SRC_DIR)/utils
 
 # External Libraries Directories
@@ -42,16 +41,16 @@ LIBFT_INC = $(LIBFT_DIR)/inc
 LIBRD_INC = $(LIBRLINE_DIR)/inc
 
 # Source and Object Files
-SRCS := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(UTILS_DIR)/*.c) \
+SRCS := $(wildcard $(SRC_DIR)/*.c)  \
 		$(wildcard $(EXEC_DIR)/*.c) $(wildcard $(PARSING_DIR)/*.c) \
-		$(wildcard $(INIT_DIR)/*.c) $(wildcard $(ERROR_DIR)/*.c) \
+		$(wildcard $(UTILS_DIR)/*.c) $(wildcard $(ERROR_DIR)/*.c) \
 		$(wildcard $(BUILTINS_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 # Libraries
 LIBFT = $(LIBFT_DIR)/bin/libft.a
 LIBRD = $(LIBRLINE_DIR)/bin/libreadline.a $(LIBRLINE_DIR)/bin/libhistory.a
-LIBS = $(LIBFT) -lcurses $(LIBRD)
+LIBS = $(LIBFT) -lreadline -lcurses $(LIBRD)
 
 # Colors for terminal prints
 BLACK    = \033[30;1m

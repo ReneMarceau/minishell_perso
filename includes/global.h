@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 16:26:05 by rmarceau          #+#    #+#             */
-/*   Updated: 2023/10/18 16:27:26 by rmarceau         ###   ########.fr       */
+/*   Updated: 2023/10/20 18:44:21 by rene             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@
 /* *************** ***************           *************** *************** */
 # define MAX_INPUT 1024
 # define MAX_ARGS 100
-# define HERE_DOC_FILE "/tmp/.heredoc"
+# define HEREDOC_FILE "/tmp/.heredoc"
 
 # define READ_END 0
 # define WRITE_END 1
@@ -87,14 +87,17 @@
 /*                                  Structures                               */
 /* *************** ***************           *************** *************** */
 
-int g_exit_code;
+extern int g_exit_code;
 
 typedef struct s_cmd {
+    int index;
+    size_t nb_args;
     char **args;
     char *input_file;
     char *output_file;
     char *append_file;
     char *heredoc_delimiter;
+    pid_t pid;
     struct s_cmd *next;
 }   t_cmd;
 
@@ -102,7 +105,7 @@ typedef struct s_shell {
     t_cmd *cmds;
     size_t nb_cmds;
     pid_t *pids;
-    int *pipes_fd[2];
+    int **pipes_fd;
     int input_fd;
     int output_fd;
     char **env;
@@ -112,5 +115,9 @@ typedef struct s_shell {
 /*                                  Prototypes                               */
 /* *************** ***************           *************** *************** */
 t_shell *init_data(char **env);
+size_t  count_cmds(t_cmd *cmds);
+bool    readlines(char **input, char **last_input);
+char	**get_envp(char **env);
+char    *substitute_env_vars(char* input);
 
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print.c                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/18 14:58:38 by rmarceau          #+#    #+#             */
-/*   Updated: 2023/10/18 16:08:48 by rmarceau         ###   ########.fr       */
+/*   Created: 2023/10/18 19:26:19 by rene              #+#    #+#             */
+/*   Updated: 2023/10/21 17:14:36 by rene             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,3 +24,19 @@ void    print_error(char *error_message, char *arg) {
     ft_putstr_fd(error_message, STDERR_FILENO);
     ft_putendl_fd(RESET, STDERR_FILENO);
 }
+
+void free_2d_array(char **array) {
+    size_t i;
+
+    i = 0;
+    while (array[i]) {
+        free(array[i]);
+        i++;
+    }
+    free(array);
+}
+
+
+
+
+

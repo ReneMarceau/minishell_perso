@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 13:48:52 by rmarceau          #+#    #+#             */
-/*   Updated: 2023/10/18 16:07:44 by rmarceau         ###   ########.fr       */
+/*   Updated: 2023/10/21 17:18:28 by rene             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,19 @@
 # define ERR_INVALID_OPT    "Invalid option"
 
 // Variable and String Errors
-#define ERR_VAR_NOT_SET     "Variable not set"
-#define ERR_UNTERM_STR      "unterminated quoted string"
+# define ERR_VAR_NOT_SET     "Variable not set"
+# define ERR_UNTERM_STR      "unterminated quoted string"
 
 // Process and System Errors
-#define ERR_JOB_CONTROL     "Job control not active"
-#define ERR_BAD_FD          "Bad file descriptor"
-#define ERR_CMD_INT         "Command interrupted"
-#define ERR_NUM_ARG_REQ     "Numeric argument required"
+# define ERR_JOB_CONTROL     "Job control not active"
+# define ERR_BAD_FD          "Bad file descriptor"
+# define ERR_CMD_INT         "Command interrupted"
+# define ERR_NUM_ARG_REQ     "Numeric argument required"
+# define ERR_FORK            "Child process creation failed"
+# define ERR_PIPE            "pipe failed"
+# define ERR_DUP2            "dup2 failed"
+# define ERR_UNLINK          "failed to remove file"
+
 
 // File Handling Errors
 # define ERR_NO_SUCH_FD     "No such file or directory"
@@ -63,5 +68,8 @@
 /*                                  Prototypes                               */
 /* *************** ***************           *************** *************** */
 void    print_error(char *error_message, char *arg);
+void    free_2d_array(char **array);
+bool    close_pipes(t_shell *shell);
+void    exit_program(t_shell *shell ,int exit_code);
 
 #endif

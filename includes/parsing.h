@@ -1,13 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_cmd.c                                       :+:      :+:    :+:   */
+/*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/17 16:10:01 by rmarceau          #+#    #+#             */
-/*   Updated: 2023/10/18 15:55:09 by rmarceau         ###   ########.fr       */
+/*   Created: 2023/10/18 22:21:04 by rene              #+#    #+#             */
+/*   Updated: 2023/10/19 01:18:38 by rene             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/global.h"
+#ifndef PARSING_H
+# define PARSING_H
+
+# include "global.h"
+
+void display_cmd_table(t_cmd *cmd_table);
+t_cmd   *parsing_test(char *input, char *status);
+
+#endif
