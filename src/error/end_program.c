@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   end_program.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 17:11:12 by rene              #+#    #+#             */
-/*   Updated: 2023/10/21 17:15:39 by rene             ###   ########.fr       */
+/*   Updated: 2023/10/23 14:31:22 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,6 @@ void    exit_program(t_shell *shell ,int exit_code) {
         free_cmds(shell->cmds);
     if (shell->pipes_fd)
         free_pipes(shell);
-    if (shell->pipes_fd)
-        free(shell->pipes_fd);
     free(shell);
     exit(exit_code);
 }

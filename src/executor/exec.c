@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 18:59:25 by rene              #+#    #+#             */
-/*   Updated: 2023/10/21 19:36:02 by rene             ###   ########.fr       */
+/*   Updated: 2023/10/23 14:19:18 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ bool    executor(t_shell *shell) {
         i++;
         cmd = cmd->next;
     }
+    close_pipes(shell);
     wait_all(shell->pids, shell->nb_cmds);
     printf("All commands executed\n");
     return (true);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 17:20:01 by rene              #+#    #+#             */
-/*   Updated: 2023/10/21 17:54:12 by rene             ###   ########.fr       */
+/*   Updated: 2023/10/23 14:23:31 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,14 +90,10 @@ static bool    handle_pipe_redir(t_shell *shell, t_cmd *cmd) {
         if (dup2(shell->pipes_fd[cmd->index - 1][READ_END], STDIN_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
         //shell->input_fd = shell->pipes_fd[cmd->index - 1][READ_END];
-        if (close(shell->pipes_fd[cmd->index - 1][READ_END]) == -1)
-            return (print_error(ERR_CLOSE, NULL), false);
     }
     if (cmd->next && !cmd->output_file && !cmd->append_file) {
         if (dup2(shell->pipes_fd[cmd->index][WRITE_END], STDOUT_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
-        if (close(shell->pipes_fd[cmd->index][WRITE_END]) == -1)
-            return (print_error(ERR_CLOSE, NULL), false);
     }
     return (true);
 }
@@ -115,11 +111,12 @@ bool    handle_redirections(t_shell *shell, t_cmd *cmd) {
         if (!handle_output_redir(shell, cmd))
             return (false);
     }
-    // else {
-    //     if (dup2(shell->output_fd, STDOUT_FILENO) == -1)
-    //         return (print_error(ERR_DUP2, NULL), false);
-    // }
+    else {
+        if (dup2(shell->output_fd, STDOUT_FILENO) == -1)
+            return (print_error(ERR_DUP2, NULL), false);
+    }
     if (!handle_pipe_redir(shell, cmd))
         return (false);
+    close_pipes(shell);
     return (true);
 }
