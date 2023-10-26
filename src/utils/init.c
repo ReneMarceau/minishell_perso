@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 19:53:59 by rene              #+#    #+#             */
-/*   Updated: 2023/10/21 17:16:38 by rene             ###   ########.fr       */
+/*   Updated: 2023/10/25 11:13:51 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,13 @@ char	**get_envp(char **env) {
 	}
 	free(path_trimmed);
 	return (enviroment);
+}
+
+bool	has_redirection(t_rdir *rdir, int type) {
+	while (rdir) {
+		if (rdir->type == type)
+			return (true);
+		rdir = rdir->next;
+	}
+	return (false);
 }

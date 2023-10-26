@@ -6,7 +6,7 @@
 /*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 18:59:25 by rene              #+#    #+#             */
-/*   Updated: 2023/10/23 14:19:18 by rmarceau         ###   ########.fr       */
+/*   Updated: 2023/10/25 12:44:01 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,13 @@ bool    executor(t_shell *shell) {
     i = 0;
     while (i < shell->nb_cmds) {
         if (cmd->pid == 0) {
-            if (!handle_redirections(shell, cmd))
-                exit_program(shell, g_exit_code);
+            while (cmd->rdir) {
+                if (!handle_redirections(shell, cmd->rdir))
+                    exit_program(shell, g_exit_code);
+                cmd->rdir = cmd->rdir->next;
+            }
+            if (!handle_pipe_redir(shell, cmd))
+                return (false);
             if (!exec_cmd(shell, cmd))
                 exit_program(shell, g_exit_code);
         }

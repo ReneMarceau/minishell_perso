@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   global.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rene <rene@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/23 16:26:05 by rmarceau          #+#    #+#             */
-/*   Updated: 2023/10/20 18:44:21 by rene             ###   ########.fr       */
+/*   Updated: 2023/10/25 11:14:11 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,24 @@
 
 extern int g_exit_code;
 
+typedef enum e_rdir_type {
+    INPUT,
+    OUTPUT,
+    APPEND,
+    HEREDOC
+}   t_rdir_type;
+
+typedef struct s_rdir {
+    char *value;
+    int type;
+    struct s_rdir *next;
+}   t_rdir;
+
 typedef struct s_cmd {
     int index;
     size_t nb_args;
     char **args;
-    char *input_file;
-    char *output_file;
-    char *append_file;
-    char *heredoc_delimiter;
+    t_rdir *rdir;
     pid_t pid;
     struct s_cmd *next;
 }   t_cmd;
@@ -116,6 +126,7 @@ typedef struct s_shell {
 /* *************** ***************           *************** *************** */
 t_shell *init_data(char **env);
 size_t  count_cmds(t_cmd *cmds);
+bool	has_redirection(t_rdir *rdir, int type);
 bool    readlines(char **input, char **last_input);
 char	**get_envp(char **env);
 char    *substitute_env_vars(char* input);

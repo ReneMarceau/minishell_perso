@@ -6,7 +6,7 @@
 /*   By: rmarceau <rmarceau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 17:20:01 by rene              #+#    #+#             */
-/*   Updated: 2023/10/23 14:23:31 by rmarceau         ###   ########.fr       */
+/*   Updated: 2023/10/25 12:34:36 by rmarceau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ static bool    exec_heredoc(char *delimiter) {
     return (true);
 }
 
-static bool    handle_input_redir(t_shell *shell, t_cmd *cmd) {
-    if (cmd->heredoc_delimiter) {
-        if (!exec_heredoc(cmd->heredoc_delimiter))
+static bool    handle_input_redir(t_shell *shell, t_rdir *rdir) {
+    if (rdir->type == HEREDOC) {
+        if (!exec_heredoc(rdir->value))
             return (false);
         shell->input_fd = open(HEREDOC_FILE, O_RDONLY);
         if (shell->input_fd == -1)
@@ -52,71 +52,69 @@ static bool    handle_input_redir(t_shell *shell, t_cmd *cmd) {
             return (print_error(ERR_UNLINK, HEREDOC_FILE), false);
     }
     else {
-        shell->input_fd = open(cmd->input_file, O_RDONLY);
+        shell->input_fd = open(rdir->value, O_RDONLY);
         if (shell->input_fd == -1)
-            return (print_error(ERR_OPEN, cmd->input_file), false);
+            return (print_error(ERR_OPEN, rdir->value), false);
         if (dup2(shell->input_fd, STDIN_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
         if (close(shell->input_fd) == -1)
-            return (print_error(ERR_CLOSE, cmd->input_file), false);
+            return (print_error(ERR_CLOSE, rdir->value), false);
     }
     return (true);
 }
 
-static bool    handle_output_redir(t_shell *shell, t_cmd *cmd) {
-    if (cmd->output_file) {
-        shell->output_fd = open(cmd->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+static bool    handle_output_redir(t_shell *shell, t_rdir *rdir) {
+    if (rdir->type == OUTPUT) {
+        shell->output_fd = open(rdir->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if (shell->output_fd == -1)
-            return (print_error(ERR_OPEN, cmd->output_file), false);
+            return (print_error(ERR_OPEN, rdir->value), false);
         if (dup2(shell->output_fd, STDOUT_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
         if (close(shell->output_fd) == -1)
-            return (print_error(ERR_CLOSE, cmd->output_file), false);
+            return (print_error(ERR_CLOSE, rdir->value), false);
     }
-    else if (cmd->append_file) {
-        shell->output_fd = open(cmd->append_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else if (rdir->type == APPEND) {
+        shell->output_fd = open(rdir->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
         if (shell->output_fd == -1)
-            return (print_error(ERR_OPEN, cmd->append_file), false);
+            return (print_error(ERR_OPEN, rdir->value), false);
         if (dup2(shell->output_fd, STDOUT_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
         if (close(shell->output_fd) == -1)
-            return (print_error(ERR_CLOSE, cmd->append_file), false);
+            return (print_error(ERR_CLOSE, rdir->value), false);
     }
     return (true);
 }
 
-static bool    handle_pipe_redir(t_shell *shell, t_cmd *cmd) {
-    if (cmd->index > 0) {
+bool    handle_pipe_redir(t_shell *shell, t_cmd *cmd) {
+    if (cmd->index > 0 && !has_redirection(cmd->rdir, INPUT)) {
         if (dup2(shell->pipes_fd[cmd->index - 1][READ_END], STDIN_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
         //shell->input_fd = shell->pipes_fd[cmd->index - 1][READ_END];
     }
-    if (cmd->next && !cmd->output_file && !cmd->append_file) {
+    if (cmd->next && !has_redirection(cmd->rdir, OUTPUT) && !has_redirection(cmd->rdir, APPEND)) {
         if (dup2(shell->pipes_fd[cmd->index][WRITE_END], STDOUT_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
     }
     return (true);
 }
 
-bool    handle_redirections(t_shell *shell, t_cmd *cmd) {
-    if (cmd->input_file) {
-        if (!handle_input_redir(shell, cmd))
+bool    handle_redirections(t_shell *shell, t_rdir *rdir) {
+    if (rdir->type == INPUT || rdir->type == HEREDOC) {
+        if (!handle_input_redir(shell, rdir))
             return (false);
     }
     // else {
     //     if (dup2(shell->input_fd, STDIN_FILENO) == -1)
     //         return (print_error(ERR_DUP2, NULL), false);
     // }
-    if (cmd->output_file || cmd->append_file) {
-        if (!handle_output_redir(shell, cmd))
+    if (rdir->type == OUTPUT || rdir->type == APPEND) {
+        if (!handle_output_redir(shell, rdir))
             return (false);
     }
     else {
         if (dup2(shell->output_fd, STDOUT_FILENO) == -1)
             return (print_error(ERR_DUP2, NULL), false);
     }
-    if (!handle_pipe_redir(shell, cmd))
-        return (false);
     close_pipes(shell);
     return (true);
 }
